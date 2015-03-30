@@ -11,4 +11,4 @@ go:
 #   - go get "github.com/gbtouch/go-socket.io"
 #   - go get -v .
 
-script: go get gopkg.in/mgo.v2 && go get github.com/ant0ine/go-json-rest/rest && go get github.com/gbtouch/go-socket.io
+# script: go get gopkg.in/mgo.v2 && go get github.com/ant0ine/go-json-rest/rest && go get github.com/gbtouch/go-socket.io
