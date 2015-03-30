@@ -3,7 +3,8 @@ go:
   - 1.4
   - tip
 install:
-  - go get "github.com/gbtouch/go-socket.io"
   - go get "gopkg.in/mgo.v2"
   - go get "github.com/ant0ine/go-json-rest/rest"
+  - go get "github.com/gbtouch/go-socket.io"
+  - go get "github.com/gbtouch/screen-server"
   - go get -v .
