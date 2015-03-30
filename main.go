@@ -1,6 +1,6 @@
 package main
 
-import "screen_server/server"
+import "github.com/gbtouch/screen_server/server"
 
 func main() {
 	server.Open()
