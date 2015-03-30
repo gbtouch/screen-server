@@ -2,21 +2,42 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
+	"gopkg.in/yaml.v2"
 )
 
-const (
-	DBUrl  = "mongodb://192.168.19.66:27017"
-	DBName = "appDatabase"
-	//DBUrl  = "mongodb://127.0.0.1:27017"
-)
+type Configuration struct {
+	DB map[string][]string `yaml:"db,omitempty"`
+}
+
+var Config Configuration
+
+func check(e error) {
+	if e != nil {
+		log.Println(e)
+	}
+}
+
+func loadConfig() {
+	filename, _ := filepath.Abs("./config.yaml")
+
+	yamlFile, err := ioutil.ReadFile(filename)
+	check(err)
+
+	err = yaml.Unmarshal(yamlFile, &Config)
+	check(err)
+}
 
 //Open makes screen_server open
 func Open() {
+	loadConfig()
+
 	Mongo.InitDB()
 
 	Resources.Load(Mongo.DB)
@@ -34,9 +55,7 @@ func Open() {
 		&rest.Route{"POST", "/layout/:id/resource", updateLayoutResourceHandler},
 		&rest.Route{"POST", "/error", notifyErrorHandler})
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	check(err)
 
 	api.SetApp(router)
 

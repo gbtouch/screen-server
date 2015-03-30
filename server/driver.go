@@ -1,10 +1,6 @@
 package server
 
-import (
-	"log"
-
-	"gopkg.in/mgo.v2"
-)
+import "gopkg.in/mgo.v2"
 
 type DBImpl struct {
 	Session *mgo.Session
@@ -13,12 +9,11 @@ type DBImpl struct {
 
 func (s *DBImpl) InitDB() {
 	var err error
-	s.Session, err = mgo.Dial(DBUrl)
-	if err != nil {
-		log.Println(err)
-	}
+	s.Session, err = mgo.Dial(Config.DB["url"][0])
 
-	s.DB = s.Session.DB(DBName)
+	check(err)
+
+	s.DB = s.Session.DB(Config.DB["name"][0])
 }
 
 func (s *DBImpl) CloseDB() {

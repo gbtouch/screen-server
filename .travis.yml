@@ -1,5 +1,7 @@
 language: go
-go: 1.4
+go:
+  - 1.4
+  - tip
 install:
   - go get "github.com/gbtouch/go-socket.io"
   - go get "gopkg.in/mgo.v2"

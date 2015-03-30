@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"screen_server/models"
 
 	"github.com/gbtouch/go-socket.io"
@@ -14,9 +13,7 @@ var server *socketio.Server
 func newSocketServer() *socketio.Server {
 	socket, err := socketio.NewServer()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	check(err)
 
 	socket.On("connection", func(so socketio.Socket) {
 		so.Join("warroom")
