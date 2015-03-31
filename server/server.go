@@ -1,26 +1,26 @@
 package server
 
 import (
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path/filepath"
+	"screen-server/log"
 	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"gopkg.in/yaml.v2"
 )
 
-type Configuration struct {
+type Config struct {
 	DB map[string][]string `yaml:"db,omitempty"`
 }
 
-var Config Configuration
+var Settings Config
 
 func check(e error) {
 	if e != nil {
-		log.Println(e)
+		logger.Log.Error("Server err:%v", e)
+		return
 	}
 }
 
@@ -30,18 +30,29 @@ func loadConfig() {
 	yamlFile, err := ioutil.ReadFile(filename)
 	check(err)
 
-	err = yaml.Unmarshal(yamlFile, &Config)
+	err = yaml.Unmarshal(yamlFile, &Settings)
 	check(err)
 }
 
 //Open makes screen_server open
 func Open() {
+	logger.Init()
+
+	logger.Log.Info("loading local config")
 	loadConfig()
+	logger.Log.Info("loaded")
+	logger.Log.Info("--------------------")
 
+	logger.Log.Info("connect mongo db")
 	Mongo.InitDB()
+	logger.Log.Info("connected")
+	logger.Log.Info("--------------------")
 
+	logger.Log.Info("loading resource&layouts")
 	Resources.Load(Mongo.DB)
 	Layouts.Load(Mongo.DB)
+	logger.Log.Info("loaded")
+	logger.Log.Info("--------------------")
 
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)
@@ -63,16 +74,19 @@ func Open() {
 
 	server = newSocketServer()
 
-	ticker := time.NewTicker(time.Second * 3)
+	ticker := time.NewTicker(time.Second * 10)
 
 	go func() {
 		for t := range ticker.C {
-			fmt.Println("Loop", t)
-			fmt.Println("Clients:", clients.Map)
+			logger.Log.Info("time:", t)
+			logger.Log.Info("clients:", clients.Map)
 		}
 	}()
 
 	http.Handle("/", api.MakeHandler())
 	http.Handle("/socket.io/", server)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	err = http.ListenAndServe(":8080", nil)
+	check(err)
+
+	logger.Log.Info("Start screen server")
 }

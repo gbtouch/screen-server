@@ -2,7 +2,7 @@ package server
 
 import (
 	"encoding/json"
-	"screen_server/models"
+	"screen-server/models"
 
 	"github.com/gbtouch/go-socket.io"
 )

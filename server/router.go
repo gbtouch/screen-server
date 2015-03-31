@@ -2,7 +2,8 @@ package server
 
 import (
 	"net/http"
-	"screen_server/models"
+	"screen-server/log"
+	"screen-server/models"
 
 	"github.com/ant0ine/go-json-rest/rest"
 )
@@ -39,6 +40,7 @@ var (
 //last update 2015-3-26
 //by tommy
 func getLayoutsHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("GET /T3-[Header]", r.Header)
 	w.WriteJson(Layouts.Store)
 }
 
@@ -46,6 +48,7 @@ func getLayoutsHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func getResourceHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("GET /T4-[Header]", r.Header)
 	w.WriteJson(Resources.Store)
 }
 
@@ -53,6 +56,7 @@ func getResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("POST /T5-[Header]", r.Header)
 	c := models.ChangedLayout{}
 	err := r.DecodeJsonPayload(&c)
 
@@ -82,6 +86,7 @@ func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func setLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("POST /T6-[Header]", r.Header)
 	t := models.Token{}
 
 	err := r.DecodeJsonPayload(&t)
@@ -111,6 +116,7 @@ func setLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func setResourceHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("POST /T7-[Header]", r.Header)
 	t := models.Token{}
 
 	err := r.DecodeJsonPayload(&t)
@@ -141,6 +147,7 @@ func setResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func notifyErrorHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("POST /T8-[Header]", r.Header)
 	error := models.Error{}
 	err := r.DecodeJsonPayload(&error)
 	if err != nil {
@@ -155,6 +162,7 @@ func notifyErrorHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func updateLayoutResourceHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("PATCH /T9-[Header]", r.Header)
 	id := r.PathParam("id")
 
 	if CurrentLayout.ID != id {
@@ -179,6 +187,7 @@ func updateLayoutResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func updateCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
+	logger.Log.Debug("PATCH /T10-[Header]", r.Header)
 	d := models.Layout{}
 
 	err := r.DecodeJsonPayload(&d)

@@ -1,6 +1,6 @@
 package main
 
-import "screen_server/server"
+import "screen-server/server"
 
 func main() {
 	server.Open()
