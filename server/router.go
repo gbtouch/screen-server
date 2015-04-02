@@ -2,9 +2,9 @@ package server
 
 import (
 	"net/http"
-	"screen-server/log"
 	"screen-server/models"
 
+	l4g "github.com/alecthomas/log4go"
 	"github.com/ant0ine/go-json-rest/rest"
 )
 
@@ -36,11 +36,23 @@ var (
 // 	Layouts.Mock()
 // }
 
+func setHeartbeatHandler(w rest.ResponseWriter, r *rest.Request) {
+	l4g.Debug("POST /T2-[Header]", r.Header)
+	c := models.Client{}
+	err := r.DecodeJsonPayload(&c)
+
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteJson(&c)
+}
+
 //getLayoutsHandler makes T3
 //last update 2015-3-26
 //by tommy
 func getLayoutsHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("GET /T3-[Header]", r.Header)
+	l4g.Debug("GET /T3-[Header]", r.Header)
 	w.WriteJson(Layouts.Store)
 }
 
@@ -48,7 +60,7 @@ func getLayoutsHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func getResourceHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("GET /T4-[Header]", r.Header)
+	l4g.Debug("GET /T4-[Header]", r.Header)
 	w.WriteJson(Resources.Store)
 }
 
@@ -56,7 +68,7 @@ func getResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("POST /T5-[Header]", r.Header)
+	l4g.Debug("POST /T5-[Header]", r.Header)
 	c := models.ChangedLayout{}
 	err := r.DecodeJsonPayload(&c)
 
@@ -86,7 +98,7 @@ func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func setLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("POST /T6-[Header]", r.Header)
+	l4g.Debug("POST /T6-[Header]", r.Header)
 	t := models.Token{}
 
 	err := r.DecodeJsonPayload(&t)
@@ -116,7 +128,7 @@ func setLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func setResourceHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("POST /T7-[Header]", r.Header)
+	l4g.Debug("POST /T7-[Header]", r.Header)
 	t := models.Token{}
 
 	err := r.DecodeJsonPayload(&t)
@@ -147,7 +159,7 @@ func setResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-26
 //by tommy
 func notifyErrorHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("POST /T8-[Header]", r.Header)
+	l4g.Debug("POST /T8-[Header]", r.Header)
 	error := models.Error{}
 	err := r.DecodeJsonPayload(&error)
 	if err != nil {
@@ -162,7 +174,7 @@ func notifyErrorHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func updateLayoutResourceHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("PATCH /T9-[Header]", r.Header)
+	l4g.Debug("PATCH /T9-[Header]", r.Header)
 	id := r.PathParam("id")
 
 	if CurrentLayout.ID != id {
@@ -187,7 +199,7 @@ func updateLayoutResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func updateCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
-	logger.Log.Debug("PATCH /T10-[Header]", r.Header)
+	l4g.Debug("PATCH /T10-[Header]", r.Header)
 	d := models.Layout{}
 
 	err := r.DecodeJsonPayload(&d)

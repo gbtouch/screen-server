@@ -10,5 +10,5 @@ type Grid struct {
 	ZIndex   int           `json:"zindex"`
 	Width    int           `json:"width"`
 	Height   int           `json:"height"`
-	Resource Resource      `json:"resource" bson:"resource"`
+	Resource *Resource     `json:"resource" bson:"resource"`
 }

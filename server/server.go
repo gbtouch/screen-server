@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"path/filepath"
 	"screen-server/log"
-	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"gopkg.in/yaml.v2"
+
+	l4g "github.com/alecthomas/log4go"
 )
 
 type Config struct {
@@ -19,8 +20,7 @@ var Settings Config
 
 func check(e error) {
 	if e != nil {
-		logger.Log.Error("Server err:%v", e)
-		return
+		l4g.Error("Server err: %v", e)
 	}
 }
 
@@ -37,22 +37,22 @@ func loadConfig() {
 //Open makes screen_server open
 func Open() {
 	logger.Init()
-
-	logger.Log.Info("loading local config")
+	l4g.Debug("Start Screen Server")
+	l4g.Info("loading local config")
 	loadConfig()
-	logger.Log.Info("loaded")
-	logger.Log.Info("--------------------")
+	l4g.Info("loaded")
+	l4g.Info("--------------------")
 
-	logger.Log.Info("connect mongo db")
+	l4g.Info("connect mongo db")
 	Mongo.InitDB()
-	logger.Log.Info("connected")
-	logger.Log.Info("--------------------")
+	l4g.Info("connected")
+	l4g.Info("--------------------")
 
-	logger.Log.Info("loading resource&layouts")
+	l4g.Info("loading resource&layouts")
 	Resources.Load(Mongo.DB)
 	Layouts.Load(Mongo.DB)
-	logger.Log.Info("loaded")
-	logger.Log.Info("--------------------")
+	l4g.Info("loaded")
+	l4g.Info("--------------------")
 
 	api := rest.NewApi()
 	api.Use(rest.DefaultDevStack...)
@@ -64,7 +64,10 @@ func Open() {
 		&rest.Route{"POST", "/layout/current", setCurrentLayoutHandler},
 		&rest.Route{"PATCH", "/layout/current", updateCurrentLayoutHandler},
 		&rest.Route{"POST", "/layout/:id/resource", updateLayoutResourceHandler},
-		&rest.Route{"POST", "/error", notifyErrorHandler})
+		&rest.Route{"POST", "/error", notifyErrorHandler},
+		&rest.Route{"POST", "/control/heartbeat", setHeartbeatHandler},
+		&rest.Route{"POST", "/display/heartbeat", setHeartbeatHandler},
+	)
 
 	check(err)
 
@@ -74,19 +77,19 @@ func Open() {
 
 	server = newSocketServer()
 
-	ticker := time.NewTicker(time.Second * 10)
-
-	go func() {
-		for t := range ticker.C {
-			logger.Log.Info("time:", t)
-			logger.Log.Info("clients:", clients.Map)
-		}
-	}()
+	// ticker := time.NewTicker(time.Second * 10)
+	//
+	// go func() {
+	// 	for t := range ticker.C {
+	// 		logger.Log.Info("time:", t)
+	// 		logger.Log.Info("clients:", clients.Map)
+	// 	}
+	// }()
 
 	http.Handle("/", api.MakeHandler())
 	http.Handle("/socket.io/", server)
 	err = http.ListenAndServe(":8080", nil)
 	check(err)
 
-	logger.Log.Info("Start screen server")
+	l4g.Info("Start Screen Server")
 }

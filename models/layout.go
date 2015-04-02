@@ -75,13 +75,9 @@ func (r *Layout) UpdateGrid(g *UpdateLayout) {
 		return
 	}
 
-	//log.Println("p update------", r)
-
 	for k, v := range g.Grids {
 		r.Grids[k] = v
 	}
-
-	//log.Println("[updated]", r)
 }
 
 func createLayout(t LayoutDO) Layout {
@@ -98,6 +94,9 @@ func createGrid(g []Grid) map[string]Grid {
 
 	for i := range g {
 		r[g[i].ID.Hex()] = g[i]
+		if g[i].Resource == nil {
+			g[i].Resource = &Resource{}
+		}
 	}
 
 	return r

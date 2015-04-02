@@ -9,6 +9,7 @@ type DBImpl struct {
 
 func (s *DBImpl) InitDB() {
 	var err error
+
 	s.Session, err = mgo.Dial(Settings.DB["url"][0])
 
 	check(err)

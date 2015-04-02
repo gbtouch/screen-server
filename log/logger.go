@@ -1,14 +1,14 @@
 package logger
 
-import log "github.com/astaxie/beego/logs"
-
-var Log *log.BeeLogger
+import (
+	l4g "github.com/alecthomas/log4go"
+)
 
 func Init() {
-	var config = `{"filename":"server.log","maxdays":30}`
-	// levle:Trace 5|Debug 4|Info 3|Warn 2|Error 1|Critical 0
-	Log = log.NewLogger(10000)
-	Log.SetLogger("file", config)
-	Log.EnableFuncCallDepth(false)
-	Log.Info("Logger Started")
+	// var config = `{"filename":"server.log","maxdays":30,"daily":true,"rotate":true}`
+	// // level:Trace 1|Debug 2|Info 3|Warn 4|Error 5|Critical 6
+	// Log := log.NewLogger(10)
+	// Log.SetLogger("file", config)
+	// Log.EnableFuncCallDepth(true)
+	l4g.LoadConfiguration("./log4go.xml")
 }
