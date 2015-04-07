@@ -8,15 +8,9 @@ type DBImpl struct {
 }
 
 func (s *DBImpl) InitDB() {
-	var err error
+	s.Session, _ = mgo.Dial(Settings.DB["url"][0])
 
-	s.Session, err = mgo.Dial(Settings.DB["url"][0])
-
-	check(err)
-
-	s.DB = s.Session.DB(Settings.DB["name"][0])
-}
-
-func (s *DBImpl) CloseDB() {
-	defer s.Session.Close()
+	if s.Session != nil {
+		s.DB = s.Session.DB(Settings.DB["name"][0])
+	}
 }

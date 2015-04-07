@@ -1,7 +1,9 @@
 package server
 
 import (
+	"bytes"
 	"net/http"
+	"screen-server/log"
 	"screen-server/models"
 
 	l4g "github.com/alecthomas/log4go"
@@ -91,6 +93,13 @@ func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 
 	server.BroadcastTo("warroom", "LayoutChanged", &c)
 
+	var jsonStr = []byte(`{"id":"` + c.ID + `"}`)
+	client := &http.Client{}
+	req, _ := http.NewRequest("POST", Settings.ServiceUrl[0], bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	_, err = client.Do(req)
+	check(err)
+
 	w.WriteJson(&c)
 }
 
@@ -117,7 +126,12 @@ func setLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 
 	tokens[t.Token] = t
 
-	Layouts.Load(Mongo.DB)
+	if Mongo.DB != nil {
+		Layouts.Load(Mongo.DB)
+		logger.Log.Info("[updateLayoutHandler]:layout updated")
+	} else {
+		logger.Log.Error("[updateLayoutHandler]:connect to mongodb failed")
+	}
 
 	server.BroadcastTo("warroom", "LayoutUpdated", &t)
 
@@ -147,7 +161,12 @@ func setResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 
 	tokens[t.Token] = t
 
-	Resources.Load(Mongo.DB)
+	if Mongo.DB != nil {
+		Resources.Load(Mongo.DB)
+		logger.Log.Info("[setResourceHandler]:resource updated")
+	} else {
+		logger.Log.Error("[setResourceHandler]:connect to mongodb failed")
+	}
 
 	server.BroadcastTo("warroom", "ResourceUpdated", &t)
 
@@ -215,5 +234,6 @@ func updateCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 
 	CurrentLayout = d
 	server.BroadcastTo("warroom", "CurrentLayoutUpdated", &CurrentLayout)
+
 	w.WriteJson(&CurrentLayout)
 }
