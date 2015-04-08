@@ -22,7 +22,10 @@ func newSocketServer() *socketio.Server {
 
 		so.On("IntializeResponse", func(msg string) {
 			if !clients.IsExistClient(so.Id()) {
-				so.Emit("IntializeCompleted", clients.AddClient(msg))
+				clients.AddClient(msg)
+				p, _ := json.Marshal(map[string]string{"token": so.Id(), "currentlayout": CurrentLayout.ID})
+				//	fmt.Println("[------------]", string(p))
+				so.Emit("IntializeCompleted", string(p))
 			} else {
 				so.Emit("IntializeCompleted", "terminal repeat")
 			}
