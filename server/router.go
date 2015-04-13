@@ -93,14 +93,14 @@ func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
 
 	server.BroadcastTo("warroom", "LayoutChanged", &c)
 
+	w.WriteJson(&c)
+
 	var jsonStr = []byte(`{"id":"` + c.ID + `"}`)
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", Settings.ServiceUrl[0], bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	_, err = client.Do(req)
 	check(err)
-
-	w.WriteJson(&c)
 }
 
 //setLayoutHandler makes T6
