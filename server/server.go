@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"screen-server/log"
+	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"gopkg.in/yaml.v2"
@@ -80,14 +81,14 @@ func Open() {
 
 	server = newSocketServer()
 
-	// ticker := time.NewTicker(time.Second * 30)
-	//
-	// go func() {
-	// 	for t := range ticker.C {
-	// 		logger.Log.Debug("time:", t)
-	// 		logger.Log.Debug("clients:", clients.Map)
-	// 	}
-	// }()
+	ticker := time.NewTicker(time.Second * 30)
+
+	go func() {
+		for t := range ticker.C {
+			logger.Log.Debug("time:", t)
+			logger.Log.Debug("clients:", clients.Map)
+		}
+	}()
 
 	http.Handle("/", api.MakeHandler())
 	http.Handle("/socket.io/", server)
