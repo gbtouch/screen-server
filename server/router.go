@@ -39,7 +39,7 @@ var (
 // }
 
 func setHeartbeatHandler(w rest.ResponseWriter, r *rest.Request) {
-	l4g.Debug("POST /T2-[Header]", r.Header)
+	//l4g.Debug("POST /T2-[Header]", r.Header)
 	c := models.Client{}
 	err := r.DecodeJsonPayload(&c)
 
@@ -70,7 +70,6 @@ func getResourceHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func setCurrentLayoutHandler(w rest.ResponseWriter, r *rest.Request) {
-	l4g.Debug("POST /T5-[Header]", r.Header)
 	c := models.ChangedLayout{}
 	err := r.DecodeJsonPayload(&c)
 
@@ -193,21 +192,23 @@ func notifyErrorHandler(w rest.ResponseWriter, r *rest.Request) {
 //last update 2015-3-27
 //by tommy
 func updateLayoutResourceHandler(w rest.ResponseWriter, r *rest.Request) {
-	l4g.Debug("PATCH /T9-[Header]", r.Header)
+	//l4g.Debug("POST /T9-[Header]", r.Header)
 	id := r.PathParam("id")
+	d := models.UpdateLayout{}
 
 	if CurrentLayout.ID != id {
 		rest.Error(w, "layout not found by id", http.StatusNotFound)
 		return
 	}
 
-	err := r.DecodeJsonPayload(&UpdateLayout)
+	err := r.DecodeJsonPayload(&d)
 
 	if err != nil {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	UpdateLayout = d
 	UpdateLayout.ID = id
 
 	server.BroadcastTo("warroom", "LayoutResourceUpdated", &UpdateLayout)

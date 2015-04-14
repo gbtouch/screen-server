@@ -47,8 +47,8 @@ func (c *Clients) AddClient(s string) string {
 		i.IP,
 		i.MAC,
 	}
-	r, _ := json.Marshal(map[string]string{"currentlayout": i.CurrentLayout, "token": i.ID})
-	return string(r)
+
+	return i.CurrentLayout
 }
 
 //RemoveClient clientMap中移除client

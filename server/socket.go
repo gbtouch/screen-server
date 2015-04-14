@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"screen-server/models"
 
 	"github.com/gbtouch/go-socket.io"
@@ -22,9 +23,14 @@ func newSocketServer() *socketio.Server {
 
 		so.On("IntializeResponse", func(msg string) {
 			if !clients.IsExistClient(so.Id()) {
-				clients.AddClient(msg)
+				r := clients.AddClient(msg)
+				if Layouts.IsExistLayout(r) {
+					CurrentLayout = Layouts.Store[r]
+				}
+
+				fmt.Println("CurrentLayout:--------------------------------------------", CurrentLayout)
 				p, _ := json.Marshal(map[string]string{"token": so.Id(), "currentlayout": CurrentLayout.ID})
-				//	fmt.Println("[------------]", string(p))
+				fmt.Println("id:--------------------------------------------", CurrentLayout.ID)
 				so.Emit("IntializeCompleted", string(p))
 			} else {
 				so.Emit("IntializeCompleted", "terminal repeat")
