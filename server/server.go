@@ -4,10 +4,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-	"screen-server/log"
 	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/gbtouch/screen-server/log"
 	"gopkg.in/yaml.v2"
 )
 

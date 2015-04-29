@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"screen-server/models"
+	"github.com/gbtouch/screen-server/models"
 
 	"github.com/gbtouch/go-socket.io"
 )

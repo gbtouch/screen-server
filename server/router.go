@@ -3,11 +3,11 @@ package server
 import (
 	"bytes"
 	"net/http"
-	"screen-server/log"
-	"screen-server/models"
 
 	l4g "github.com/alecthomas/log4go"
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/gbtouch/screen-server/log"
+	"github.com/gbtouch/screen-server/models"
 )
 
 var (
