@@ -1,6 +1,6 @@
 package main
 
-import "screen-server/server"
+import "github.com/gbtuouch/screen-server/server"
 
 func main() {
 	server.Open()
