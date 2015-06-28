@@ -4,7 +4,6 @@ import (
 	"sync"
 	"time"
 
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -22,6 +21,7 @@ type Resource struct {
 	Type resourceType  `json:"stype" bson:"stype"`
 	URL  string        `json:"url" bson:"url"`
 	Fix  bool          `json:"fix" bson:"fix"`
+	Name string        `json:"name" bson:"name"`
 }
 
 //ResourceMap make server's resource list
